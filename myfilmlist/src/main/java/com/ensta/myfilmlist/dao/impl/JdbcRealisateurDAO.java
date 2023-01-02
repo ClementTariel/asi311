@@ -38,19 +38,19 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
         return realisateurs;
     }
     public Realisateur findByNomAndPrenom(String nom, String prenom){
-            List<Realisateur> realisateurs = jdbcTemplate.query("SELECT id, nom, prenom, date_naissance, celebre  FROM Realisateur where nom=? and prenom=?", (rs, rownum) -> {
+            Realisateur realisateur = jdbcTemplate.queryForObject("SELECT id, nom, prenom, date_naissance, celebre  FROM Realisateur where nom=? and prenom=?", (rs, rownum) -> {
 
-                Realisateur realisateur = new Realisateur();
-                realisateur.setId(rs.getInt("id"));
-                realisateur.setNom(rs.getString("nom"));
-                realisateur.setPrenom(rs.getString("prenom"));
-                realisateur.setCelebre(rs.getBoolean("celebre"));
-                realisateur.setDateNaissance(rs.getDate("date_naissance").toLocalDate());
+                Realisateur real = new Realisateur();
+                real.setId(rs.getInt("id"));
+                real.setNom(rs.getString("nom"));
+                real.setPrenom(rs.getString("prenom"));
+                real.setCelebre(rs.getBoolean("celebre"));
+                real.setDateNaissance(rs.getDate("date_naissance").toLocalDate());
 
-                return realisateur;
+                return real;
 
             },nom, prenom);
-            return realisateurs.get(0);
+            return realisateur;
     }
     public Optional<Realisateur> findById(long id){
         try {
@@ -73,7 +73,6 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
     }
 
     public Realisateur update(Realisateur realisateur){
-        //update
         jdbcTemplate.update("UPDATE Realisateur SET nom=?, prenom=?, date_naissance=?, celebre=? WHERE id = ?",
                 realisateur.getNom(), realisateur.getPrenom(), realisateur.getDateNaissance(),realisateur.isCelebre(),realisateur.getId());
         return realisateur;

@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -32,7 +33,13 @@ public interface FilmResource {
 
     @ApiOperation(value = "Créer un film", notes = "Permet d'ajouter le film dont on a fourni les caractéristiques.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Le flma été créé correctement")
+            @ApiResponse(code = 201, message = "Le film été créé correctement")
     })
     ResponseEntity<FilmDTO> createFilm(FilmForm filmForm) throws ControllerException;
+
+    @ApiOperation(value = "Supprimer un film", notes = "Permet de supprimer le film correspondant à l'id fourni.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Le film été supprimé correctement")
+    })
+    ResponseEntity<?> DeleteFilmById(long id) throws ControllerException;
 }
