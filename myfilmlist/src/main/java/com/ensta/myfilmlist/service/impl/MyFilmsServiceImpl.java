@@ -7,6 +7,7 @@ import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.FilmForm;
+import com.ensta.myfilmlist.form.RealisateurForm;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Realisateur;
@@ -107,6 +108,21 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
+    public RealisateurDTO findRealisateurById(long id) throws ServiceException{
+        Optional<Realisateur> optionalRealisateur = realisateurDAO.findById(id);
+        if (optionalRealisateur.isEmpty()){
+            throw new ServiceException("Le realisateur n'a pas ete trouve");
+        }
+        return convertRealisateurToRealisateurDTO(optionalRealisateur.get());
+    }
+
+    public RealisateurDTO createRealisateur(RealisateurForm realisateurForm) throws ServiceException{
+        Realisateur realisateur = convertRealisateurFormToRealisateur(realisateurForm);
+        realisateur = realisateurDAO.save(realisateur);
+        return convertRealisateurToRealisateurDTO(realisateur);
+    }
+
+    @Override
     public FilmDTO findFilmById(long id) throws ServiceException{
         Optional<Film> optionalFilm = filmDAO.findById(id);
         if (optionalFilm.isEmpty()){
@@ -131,5 +147,18 @@ public class MyFilmsServiceImpl implements MyFilmsService {
         filmDAO.delete(film);
         updateRealisateurCelebre(realisateur);
 
+    }
+
+    public void deleteRealisateur(long id) throws ServiceException{
+        Optional<Realisateur> optionalRealisateur = realisateurDAO.findById(id);
+        if (optionalRealisateur.isEmpty()){
+            throw new ServiceException("Le film n'a pas ete trouve");
+        }
+        Realisateur realisateur = optionalRealisateur.get();
+        List<Film> films = filmDAO.findByRealisateurId(realisateur.getId());
+        if (films != null && films.size()>0){
+            throw new ServiceException("Le realisateur ne peut pas etre supprime car tous ses films n'ont pas ete supprimes (il en reste "+films.size()+")");
+        }
+        realisateurDAO.delete(realisateur);
     }
 }

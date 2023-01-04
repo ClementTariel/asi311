@@ -4,6 +4,7 @@ import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.FilmForm;
+import com.ensta.myfilmlist.form.RealisateurForm;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Realisateur;
 
@@ -45,7 +46,13 @@ public interface MyFilmsService {
 
     public RealisateurDTO findRealisateurByNomAndPrenom(String nom, String prenom) throws ServiceException;
 
+    public RealisateurDTO findRealisateurById(long id) throws ServiceException;
+
+    public RealisateurDTO createRealisateur(RealisateurForm realisateurForm) throws ServiceException;
+
     public FilmDTO findFilmById(long id) throws ServiceException;
 
     public void deleteFilm(long id) throws ServiceException;
+
+    public void deleteRealisateur(long id) throws ServiceException;
 }

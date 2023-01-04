@@ -9,8 +9,14 @@ import com.ensta.myfilmlist.persistence.ConnectionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +32,7 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
         List<Realisateur> realisateurs = jdbcTemplate.query("SELECT id, nom, prenom, date_naissance, celebre  FROM Realisateur", (rs, rownum) -> {
 
             Realisateur realisateur = new Realisateur();
-            realisateur.setId(rs.getInt("realisateur_id"));
+            realisateur.setId(rs.getInt("id"));
             realisateur.setNom(rs.getString("nom"));
             realisateur.setPrenom(rs.getString("prenom"));
             realisateur.setCelebre(rs.getBoolean("celebre"));
@@ -36,6 +42,24 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
 
         });
         return realisateurs;
+    }
+
+    public Realisateur save(Realisateur realisateur) {
+        String insertQuery = "INSERT INTO Realisateur(nom, prenom, date_naissance, celebre) VALUES(?,?,?,false)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        PreparedStatementCreator creator = conn -> {
+            PreparedStatement statement = conn.prepareStatement(insertQuery,
+                    Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, realisateur.getNom());
+            statement.setString(2, realisateur.getPrenom());
+            statement.setDate(3, Date.valueOf(realisateur.getDateNaissance()));
+            return statement;
+        };
+        jdbcTemplate.update(creator, keyHolder);
+        long newId = keyHolder.getKey().longValue();
+
+        realisateur.setId(newId);
+        return realisateur;
     }
     public Realisateur findByNomAndPrenom(String nom, String prenom){
             Realisateur realisateur = jdbcTemplate.queryForObject("SELECT id, nom, prenom, date_naissance, celebre  FROM Realisateur where nom=? and prenom=?", (rs, rownum) -> {
@@ -76,5 +100,11 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
         jdbcTemplate.update("UPDATE Realisateur SET nom=?, prenom=?, date_naissance=?, celebre=? WHERE id = ?",
                 realisateur.getNom(), realisateur.getPrenom(), realisateur.getDateNaissance(),realisateur.isCelebre(),realisateur.getId());
         return realisateur;
+    }
+
+    public void delete(Realisateur realisateur) {
+        String deleteQuery = "DELETE FROM Realisateur WHERE id = ?";
+        Object[] args = new Object[]{realisateur.getId()};
+        jdbcTemplate.update(deleteQuery, args);
     }
 }

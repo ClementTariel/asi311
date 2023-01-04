@@ -3,6 +3,7 @@ package com.ensta.myfilmlist.mapper;
 import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.form.FilmForm;
+import com.ensta.myfilmlist.form.RealisateurForm;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Realisateur;
 
@@ -69,6 +70,16 @@ public class RealisateurMapper {
 				.collect(Collectors.toList()));
 		}
 		realisateur.setCelebre(realisateurDTO.isCelebre());
+
+		return realisateur;
+	}
+
+	public static Realisateur convertRealisateurFormToRealisateur(RealisateurForm realisateurForm) {
+		Realisateur realisateur = new Realisateur();
+		realisateur.setNom(realisateurForm.getNom());
+		realisateur.setPrenom(realisateurForm.getPrenom());
+		realisateur.setDateNaissance(realisateurForm.getDateNaissance());
+		realisateur.setCelebre(false);
 
 		return realisateur;
 	}

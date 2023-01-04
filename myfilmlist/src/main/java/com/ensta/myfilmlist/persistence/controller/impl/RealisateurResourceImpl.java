@@ -1,11 +1,9 @@
 package com.ensta.myfilmlist.persistence.controller.impl;
 
-
-import com.ensta.myfilmlist.dto.FilmDTO;
+import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.exception.ControllerException;
 import com.ensta.myfilmlist.exception.ServiceException;
-import com.ensta.myfilmlist.form.FilmForm;
-import com.ensta.myfilmlist.model.Film;
+import com.ensta.myfilmlist.form.RealisateurForm;
 import com.ensta.myfilmlist.service.MyFilmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,32 +16,31 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/film")
+@RequestMapping("/realisateur")
 @CrossOrigin("http://localhost:3000")
-public class FilmResourceImpl {
-
+public class RealisateurResourceImpl {
     @Autowired
     private MyFilmsService myFilmsService;
 
     @GetMapping
-    public ResponseEntity<List<FilmDTO>> getAllFilms() throws ControllerException{
+    public ResponseEntity<List<RealisateurDTO>> findAllRealisateurs() throws ControllerException {
         try {
-            List<FilmDTO> filmDTOs = myFilmsService.findAllFilms();
+            List<RealisateurDTO> realisateurDTOs = myFilmsService.findAllRealisateurs();
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(filmDTOs);
+                    .body(realisateurDTOs);
         }catch (ServiceException e) {
             throw new ControllerException(e);
         }
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<FilmDTO> getFilmById(@PathVariable long id) throws ControllerException{
+    ResponseEntity<RealisateurDTO> getRealisateurById(@PathVariable long id) throws ControllerException{
         try {
-            FilmDTO filmDTO = myFilmsService.findFilmById(id);
+            RealisateurDTO realisateurDTO = myFilmsService.findRealisateurById(id);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(filmDTO);
+                    .body(realisateurDTO);
         }catch (ServiceException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -52,21 +49,21 @@ public class FilmResourceImpl {
     }
 
     @PostMapping
-    ResponseEntity<FilmDTO> createFilm(@Valid FilmForm filmForm) throws ControllerException{
+    ResponseEntity<RealisateurDTO> createRealisateur(RealisateurForm realisateurForm) throws ControllerException{
         try {
-            FilmDTO filmDTO = myFilmsService.createFilm(filmForm);
+            RealisateurDTO realisateurDTO = myFilmsService.createRealisateur(realisateurForm);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(filmDTO);
+                    .body(realisateurDTO);
         }catch (ServiceException e) {
             throw new ControllerException(e);
         }
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<?> DeleteFilmById(@PathVariable long id) throws ControllerException{
+    ResponseEntity<?> DeleteRealisateurById(@PathVariable long id) throws ControllerException{
         try {
-            myFilmsService.deleteFilm(id);
+            myFilmsService.deleteRealisateur(id);
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
                     .body(null);

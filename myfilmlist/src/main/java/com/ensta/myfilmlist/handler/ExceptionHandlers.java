@@ -16,14 +16,14 @@ public class ExceptionHandlers {
     public ResponseEntity<String> handleException(ControllerException exception, WebRequest webRequest) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Erreur interne");
+                .body("Erreur interne : "+exception.getMessage());
     }
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<String> handleException(BindException exception, WebRequest webRequest) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Parametre invalide");
+                .body("Parametre invalide : "+exception.getMessage());
     }
 
 }
